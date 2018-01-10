@@ -2,36 +2,35 @@ import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
 
+
 class App extends Component {
   state = {
     persons : [
-      { name: "Dmitrii", age: 30 },
-      { name: "Max", age: 28},
-      { name: "Manu", age: 29}
+      { id: "abcdef", name: "Dmitrii", age: 30 },
+      { id: "abef", name: "Max", age: 28},
+      { id: "ab", name: "Manu", age: 29}
     ],
     otherState : 'otherStatevalue',
     showPersons: false
   }
 
-  switchNameHandler = (newName) => {
+  nameChangedHandler = (event, id) => {
     //  console.log('Hutton Was Clicked');
-    this.setState({
-      persons : [
-        { name: newName, age: 30 },
-        { name: "Max", age: 28},
-        { name: "Manu", age: 92}
-      ]
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     })
-  }
 
-  nameChangedHandler = (event) => {
-    //  console.log('Hutton Was Clicked');
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
     this.setState({
-      persons : [
-        { name: event.target.value, age: 30 },
-        { name: "Max", age: 28},
-        { name: "Manu", age: 92}
-      ]
+      persons : persons
     })
   }
 
@@ -40,9 +39,18 @@ class App extends Component {
     this.setState({showPersons: !doesShow});
   }
 
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons; -- reference type
+    // const persons = this.state.persons.slice(); -- updates state in immutable fashion, ES6 syntax
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons:persons});
+  } 
+
   render() {
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
@@ -54,24 +62,38 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          {this.state.persons.map(person => {
+          {this.state.persons.map((person, index) => {
             return <Person
+              click={() => this.deletePersonHandler(index)}
               name={person.name}
-              age={person.age}/>
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)}/>
           })}  
         </div>
-      )
+      );
+      style.backgroundColor='red';
+    }
+
+    const classes = [];
+
+    if (this.state.persons.length <= 2) {
+      classes.push('red');
+    }
+
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
     }
 
     return (
-      <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <p>This is really working!</p>
-        <button 
-          style={style}
-          onClick={this.togglePersonsHandler}>Toggle Persons</button>
-        {persons}
-      </div>
+        <div className="App">
+          <h1>Hi, I'm a React App</h1>
+          <p className={classes.join(' ')}>This is really working!</p>
+          <button 
+            style={style}
+            onClick={this.togglePersonsHandler}>Toggle Persons</button>
+          {persons}
+        </div>
     );
     // return React.createElement('div', {className:'App'}, React.createElement('h1', null, 'Hi, I\'m a React App'));
   }

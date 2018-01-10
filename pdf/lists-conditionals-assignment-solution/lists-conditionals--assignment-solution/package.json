@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "html-webpack-plugin": "^2.28.0",
-    "radium": "^0.21.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-scripts": "1.0.17"
+    "react": "^16.0.0-rc.3",
+    "react-dom": "^16.0.0-rc.3",
+    "react-scripts": "1.0.13"
   },
   "scripts": {
     "start": "react-scripts start",
